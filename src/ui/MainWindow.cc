@@ -646,6 +646,24 @@ void MainWindow::buildCommonWidgets()
         addToCentralStackedWidget(simView, VIEW_SIMULATION, tr("Simulation View"));
     }
 
+   /** if (!ualbertaControlWidget)
+    {
+    	qDebug() << "Load UAlberta Control Widget";
+        ualbertaControlWidget = new QDockWidget(tr("UDenver Autopilot Control"), this);
+    	UAlbertaControlWidget* ualberta = new UAlbertaControlWidget(this);
+    	ualbertaControlWidget->setWidget(ualberta);
+    	ualbertaControlWidget->setObjectName("UALBERTA_AUTOPILOT_CONTROL_WIDGET");
+        addTool(ualbertaControlWidget, tr("UDenver Autopilot Control"), Qt::RightDockWidgetArea);
+
+    }**/
+    createDockWidget(engineeringView, 
+            new UAlbertaControlWidget(this),
+            tr("UDenver Autopilot Control"),
+            "UALBERTA_AUTOPILOT_CONTROL_WIDGET", 
+            VIEW_ENGINEER,
+            Qt::RightDockWidgetArea);
+
+
     // Dock widgets
     createDockWidget(simView,new UASControlWidget(this),tr("Control"),"UNMANNED_SYSTEM_CONTROL_DOCKWIDGET",VIEW_SIMULATION,Qt::LeftDockWidgetArea);
 

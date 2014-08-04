@@ -108,6 +108,15 @@ UASInterface* QGCMAVLinkUASFactory::createUAS(MAVLinkProtocol* mavlink, LinkInte
 			break;
 		}
 #endif
+	case MAV_AUTOPILOT_UALBERTA:
+	{
+		qDebug() << "Creating UAlberta MAV";
+		UAlbertaMAV* mav = new UAlbertaMAV(mavlink,worker, sysid);
+		mav->setSystemType((int)heartbeat->type);
+		connect(mavlink, SIGNAL(messageReceived(LinkInterface*, mavlink_message_t)), mav, SLOT(receiveMessage(LinkInterface*, mavlink_message_t)));
+		uas = mav;
+		break;
+	}
     default:
     {
         UAS* mav = new UAS(mavlink, worker, sysid);

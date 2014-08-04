@@ -239,7 +239,8 @@ INCLUDEPATH += \
     src/ui/mission \
     src/ui/designer \
     src/ui/configuration \
-    src/ui/main
+    src/ui/main \
+    src/ui/udenver
 
 FORMS += \
     src/ui/MainWindow.ui \
@@ -358,7 +359,8 @@ FORMS += \
     src/ui/px4_configuration/QGCPX4MulticopterConfig.ui \
     src/ui/px4_configuration/QGCPX4SensorCalibration.ui \
     src/ui/designer/QGCXYPlot.ui \
-    src/ui/QGCUASFileView.ui
+    src/ui/QGCUASFileView.ui \
+    src/ui/udenver/UAlbertaControlWidget.ui
 
 HEADERS += \
     src/MG.h \
@@ -557,7 +559,9 @@ HEADERS += \
     src/ui/QGCUASFileView.h \
     src/uas/QGCUASWorker.h \
     src/CmdLineOptParser.h \
-    src/uas/QGXPX4UAS.h
+    src/uas/QGXPX4UAS.h \
+    src/ui/udenver/UAlbertaControlWidget.h \
+    src/uas/UAlbertaMAV.h
 
 SOURCES += \
     src/main.cc \
@@ -746,8 +750,9 @@ SOURCES += \
     src/ui/QGCUASFileView.cc \
     src/uas/QGCUASWorker.cc \
     src/CmdLineOptParser.cc \
-    src/uas/QGXPX4UAS.cc
-
+    src/uas/QGXPX4UAS.cc \
+    src/ui/udenver/UAlbertaControlWidget.cc \
+    src/uas/UAlbertaMAV.cc
 #
 # Unit Test specific configuration goes here
 # We'd ideally only build this code as part of a Debug build, but qmake doesn't allow

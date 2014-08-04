@@ -64,7 +64,7 @@ else {
 # for it will be compiled in to QGC. It will also create a 
 # QGC_USE_{AUTOPILOT_NAME}_MESSAGES macro for use within the actual code.
 #
-MAVLINKPATH_REL = libs/mavlink/include/mavlink/v1.0
+MAVLINKPATH_REL = ../UDenverMavlink/include/
 MAVLINKPATH = $$BASEDIR/$$MAVLINKPATH_REL
 DEFINES += MAVLINK_NO_DATA
 
@@ -83,7 +83,7 @@ else:exists(user_config.pri):infile(user_config.pri, MAVLINK_CONF) {
 # If no valid user selection is found, default to the ardupilotmega if it's available.
 # Note: This can be a list of several dialects.
 else {
-    MAVLINK_CONF=ardupilotmega
+    MAVLINK_CONF=ualberta
     message($$sprintf("Using default MAVLink dialect '%1'.", $$MAVLINK_CONF))
 }
 

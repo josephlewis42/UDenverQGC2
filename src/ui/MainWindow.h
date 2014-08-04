@@ -78,6 +78,8 @@ This file is part of the QGROUNDCONTROL project
 #include "MAVLinkDecoder.h"
 #include "QGCUASFileViewMulti.h"
 
+#include "UAlbertaControlWidget.h"
+
 class QGCMapTool;
 class QGCMAVLinkMessageSender;
 class QGCFirmwareUpdate;
@@ -477,6 +479,8 @@ protected:
     QMap<int, QDockWidget*> hilDocks;
 
     QPointer<QGCUASFileViewMulti> fileWidget;
+
+    QPointer<QDockWidget> ualbertaControlWidget;
 
     // Popup widgets
     JoystickWidget* joystickWidget;
