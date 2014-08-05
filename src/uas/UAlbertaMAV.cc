@@ -26,8 +26,12 @@ This file is part of the QGROUNDCONTROL project
 UAlbertaMAV::UAlbertaMAV(MAVLinkProtocol* protocol, QThread* thread,  int id)
 :UAS(protocol, thread,  id)
 {
+    // The following calls to qRegisterMetaType are done to silence debug output which warns
+    // that we use these types in signals, and without calling qRegisterMetaType we can't queue
+    // these signals. In general we don't queue these signals, but we do what the warning says
+    // anyway to silence the debug output.
 
-
+    qRegisterMetaType<QVector<float> >();
 }
 
 void UAlbertaMAV::receiveMessage(LinkInterface* link, mavlink_message_t message)
@@ -219,7 +223,7 @@ void UAlbertaMAV::receiveMessage(LinkInterface* link, mavlink_message_t message)
 			emit originChanged(origin);
 			emit refPosChanged(ref_pos);
 
-			quint64 time = getUnixReferenceTime(pos.time_boot_ms);
+			quint64 time = getUnixTime();
 
 			// plot llh position
 			emit valueChanged(uasId, "Latitude", "deg", llh_pos[0], time);
@@ -250,7 +254,7 @@ void UAlbertaMAV::receiveMessage(LinkInterface* link, mavlink_message_t message)
 		{
 			mavlink_ualberta_attitude_t attitude;
 			mavlink_msg_ualberta_attitude_decode(&message, &attitude);
-			quint64 time = getUnixReferenceTime(attitude.time_boot_ms);
+			quint64 time = getUnixTime();
 //			lastAttitude = time;
 
 			// copy out euler angles
@@ -294,7 +298,7 @@ void UAlbertaMAV::receiveMessage(LinkInterface* link, mavlink_message_t message)
 
 //			emit attitudeChanged(this, roll, pitch, yaw, time);
 //			emit attitudeSpeedChanged(uasId, attitude.rollspeed, attitude.pitchspeed, attitude.yawspeed, time);
-
+            qDebug() << "ualbertamav got euler angles";
 			emit eulerChanged(ahrs_euler, nav_euler);
 			break;
 		}

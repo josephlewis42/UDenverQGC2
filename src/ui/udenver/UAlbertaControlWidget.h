@@ -49,7 +49,7 @@ public:
 
 public slots:
     /** @brief Set the system this widget controls */
-    void setUAS(UASInterface* uas);
+    void setActiveUAS(UASInterface* uas);
     /// slot for servo source button
 	void setServoSource();
 	/// slot for control mode button

@@ -164,7 +164,11 @@ void UASWaypointManager::handleWaypointCount(quint8 systemId, quint8 compId, qui
 
 
     } else {
-        qDebug("Rejecting waypoint count message, check mismatch: current_state: %d == %d, system id %d == %d, comp id %d == %d", current_state, WP_GETLIST, current_partner_systemid, systemId, current_partner_compid, compId);
+        // TODO THis seems broken and keeps triggering every time with all 0s - Joseph Lewis 2014-08-05
+        if(current_partner_systemid != 0)
+        {
+            qDebug("Rejecting waypoint count message, check mismatch: current_state: %d == %d, system id %d == %d, comp id %d == %d", current_state, WP_GETLIST, current_partner_systemid, systemId, current_partner_compid, compId);
+        }
     }
 }
 

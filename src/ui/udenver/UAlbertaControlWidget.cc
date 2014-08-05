@@ -28,6 +28,9 @@ This file is part of the PIXHAWK project
  *   @author Bryan Godbolt <godbolt@ece.ualberta.ca>
  *   @date February 5, 2012: Class Creation
  *
+ *   @author Joseph Lewis <joseph@josephlewis.net>
+ *   @date 2014-08-05: Update to work with qgc 2
+ *
  */
 
 #include "UAlbertaControlWidget.h"
@@ -44,7 +47,10 @@ UAlbertaControlWidget::UAlbertaControlWidget(QWidget *parent) :
     uas(0)
 {
 	ui.setupUi(this);
-	connect(UASManager::instance(), SIGNAL(activeUASSet(UASInterface*)), this, SLOT(setUAS(UASInterface*)));
+
+    setActiveUAS(UASManager::instance()->getActiveUAS());
+    connect(UASManager::instance(), SIGNAL(activeUASSet(UASInterface*)), this, SLOT(setActiveUAS(UASInterface*)));
+
 	connect(ui.servo_source_button, SIGNAL(clicked()), this, SLOT(setServoSource()));
 	connect(ui.control_mode_button, SIGNAL(clicked()), this, SLOT(setControlMode()));
 	connect(ui.ned_origin_button, SIGNAL(clicked()), this, SLOT(setOrigin()));
@@ -214,9 +220,13 @@ void UAlbertaControlWidget::initAttitude()
 	}
 }
 
-void UAlbertaControlWidget::setUAS(UASInterface* uas)
+void UAlbertaControlWidget::setActiveUAS(UASInterface* uas)
 {
-	if (uas != 0)
+	qDebug() << "setting ualberta UAS";
+    qDebug() << "\n\n\n\n\n\n\n\n\n\n\n\n";
+
+    // disconnect current mav
+	if (this->uas > 0)
     {
 		UAlbertaMAV* mav = dynamic_cast<UAlbertaMAV*>(UASManager::instance()->getUASForId(this->uas));
 		if (mav)
@@ -243,32 +253,42 @@ void UAlbertaControlWidget::setUAS(UASInterface* uas)
 		}
 	}
 
-	UAlbertaMAV* mav = dynamic_cast<UAlbertaMAV*>(uas);
-	if (mav)
-	{
-		connect(mav, SIGNAL(servoSource(QString)), ui.servo_source_label, SLOT(setText(QString)));
-		connect(mav, SIGNAL(controlMode(QString)), ui.control_mode_label, SLOT(setText(QString)));
-		connect(mav, SIGNAL(pilotMode(QString)), ui.pilot_mode_label, SLOT(setText(QString)));
-		connect(mav, SIGNAL(gx3Message(QString)), ui.gx3_message_label, SLOT(setText(QString)));
-		connect(mav, SIGNAL(gx3Status(QString)), ui.gx3_state_label, SLOT(setText(QString)));
-		connect(mav, SIGNAL(positionChanged(QVector<float>, QVector<float>)), this, SLOT(displayPosition(QVector<float>, QVector<float>)));
-		connect(mav, SIGNAL(velocityChanged(QVector<float>)), this, SLOT(displayVelocity(QVector<float>)));
-		connect(mav, SIGNAL(originChanged(QVector<float>)), this, SLOT(displayOrigin(QVector<float>)));
-		connect(ui.ned_origin_button, SIGNAL(clicked()), mav, SLOT(setOrigin()));
-		connect(mav, SIGNAL(eulerChanged(QVector<float>, QVector<float>)), this, SLOT(displayEuler(QVector<float>, QVector<float>)));
-		connect(mav, SIGNAL(attitudeSource(QString)), ui.attitude_source_label, SLOT(setText(QString)));
-		connect(mav, SIGNAL(rpm(int,int)), this, SLOT(displayRPM(int,int)));
-		connect(mav, SIGNAL(collective(float)), this, SLOT(displayCollective(float)));
-        connect(mav, SIGNAL(altimeter(float)), this, SLOT(displayAltimeter(float)));
-		connect(mav, SIGNAL(refPosChanged(QVector<float>)), this, SLOT(displaySetpoint(QVector<float>)));
-		connect(mav, SIGNAL(voltages(float,float)), this, SLOT(displayVoltages(float,float)));
-		connect(mav, SIGNAL(novatel_satellites(int)),this, SLOT(displaySatellites(int)));
-		connect(mav,SIGNAL(novatel_gps_position(int,int,QVector<float>)),this,SLOT(displayPositionError(int,int,QVector<float>)));
-		connect(mav,SIGNAL(novatel_gps_velocity(int,QVector<float>)),this,SLOT(displayVelocityError(int,QVector<float>)));
+    if(uas && uas->getAutopilotType() == MAV_AUTOPILOT_UALBERTA) {
 
-	}
+        UAlbertaMAV* mav = dynamic_cast<UAlbertaMAV*>(uas);
+        if (mav)
+        {
+            connect(mav, SIGNAL(servoSource(QString)), ui.servo_source_label, SLOT(setText(QString)));
+            connect(mav, SIGNAL(controlMode(QString)), ui.control_mode_label, SLOT(setText(QString)));
+            connect(mav, SIGNAL(pilotMode(QString)), ui.pilot_mode_label, SLOT(setText(QString)));
+            connect(mav, SIGNAL(gx3Message(QString)), ui.gx3_message_label, SLOT(setText(QString)));
+            connect(mav, SIGNAL(gx3Status(QString)), ui.gx3_state_label, SLOT(setText(QString)));
+            connect(mav, SIGNAL(positionChanged(QVector<float>, QVector<float>)), this, SLOT(displayPosition(QVector<float>, QVector<float>)));
+            connect(mav, SIGNAL(velocityChanged(QVector<float>)), this, SLOT(displayVelocity(QVector<float>)));
+            connect(mav, SIGNAL(originChanged(QVector<float>)), this, SLOT(displayOrigin(QVector<float>)));
+            connect(ui.ned_origin_button, SIGNAL(clicked()), mav, SLOT(setOrigin()));
+            connect(mav, SIGNAL(eulerChanged(QVector<float>, QVector<float>)), this, SLOT(displayEuler(QVector<float>, QVector<float>)));
+            connect(mav, SIGNAL(attitudeSource(QString)), ui.attitude_source_label, SLOT(setText(QString)));
+            connect(mav, SIGNAL(rpm(int,int)), this, SLOT(displayRPM(int,int)));
+            connect(mav, SIGNAL(collective(float)), this, SLOT(displayCollective(float)));
+            connect(mav, SIGNAL(altimeter(float)), this, SLOT(displayAltimeter(float)));
+            connect(mav, SIGNAL(refPosChanged(QVector<float>)), this, SLOT(displaySetpoint(QVector<float>)));
+            connect(mav, SIGNAL(voltages(float,float)), this, SLOT(displayVoltages(float,float)));
+            connect(mav, SIGNAL(novatel_satellites(int)),this, SLOT(displaySatellites(int)));
+            connect(mav,SIGNAL(novatel_gps_position(int,int,QVector<float>)),this,SLOT(displayPositionError(int,int,QVector<float>)));
+            connect(mav,SIGNAL(novatel_gps_velocity(int,QVector<float>)),this,SLOT(displayVelocityError(int,QVector<float>)));
+        }
 
-    this->uas = uas->getUASID();
+        this->uas = uas->getUASID();
+
+        qDebug() << "set ualberta UAS!";
+        qDebug() << "\n\n\n\n\n\n\n\n\n\n\n\n";
+
+    } else {
+        qDebug() << "got autopilot that wasn't ualberta!";
+        this->uas = -1;
+    }
+
 }
 
 void UAlbertaControlWidget::displayRPM(int engine,int rotor)
@@ -439,6 +459,7 @@ void UAlbertaControlWidget::displayVelocity(QVector<float> vel)
 
 void UAlbertaControlWidget::displayEuler(QVector<float> ahrs, QVector<float> nav)
 {
+    qDebug() << "got new euler angles";
     ui.ahrs_euler_label->setText(QString("%1, %2, %3").arg(ahrs[0],8, 'f', 3).arg(ahrs[1], 8, 'f', 3).arg(ahrs[2], 8, 'f', 3));
     ui.nav_euler_label->setText(QString("%1, %2, %3").arg(nav[0],8,'f',3).arg(nav[1],8,'f',3).arg(nav[2],8,'f',3));
 }
