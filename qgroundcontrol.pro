@@ -144,6 +144,9 @@ WindowsBuild {
 	RC_FILE = $$BASEDIR/qgroundcontrol.rc
 }
 
+# This is for the ualberta autopilot
+DEFINES += MAVLINK_ENABLED_UALBERTA
+
 #
 # By default warnings as errors are turned off. Even so, in order for a pull request 
 # to be accepted you must compile cleanly with warnings as errors turned on the default 
