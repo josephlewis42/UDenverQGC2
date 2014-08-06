@@ -663,6 +663,13 @@ void MainWindow::buildCommonWidgets()
             VIEW_ENGINEER,
             Qt::RightDockWidgetArea);
 
+    createDockWidget(engineeringView,
+        new QGCRemoteControlView(this),
+        tr("UDenver RC Calibration"),
+        "UDENVER_AUTOPILOT_RC_CALIBRATION",
+        VIEW_ENGINEER,
+        Qt::RightDockWidgetArea);
+
 
     // Dock widgets
     createDockWidget(simView,new UASControlWidget(this),tr("Control"),"UNMANNED_SYSTEM_CONTROL_DOCKWIDGET",VIEW_SIMULATION,Qt::LeftDockWidgetArea);

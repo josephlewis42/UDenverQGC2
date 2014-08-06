@@ -252,6 +252,7 @@ void RadioCalibrationWindow::parseSetpoint(const QDomElement &setpoint, const QP
 
 void RadioCalibrationWindow::send()
 {
+    qDebug() << "\n\n\n\n\n\n\n\n\n\n" << "sending radio calibration";
     qDebug() << __FILE__ << __LINE__ << "uasId = " << uasId;
 #ifdef MAVLINK_ENABLED_UALBERTA
     UAS *uas = dynamic_cast<UAS*>(UASManager::instance()->getUASForId(uasId));
